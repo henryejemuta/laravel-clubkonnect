@@ -1,0 +1,16 @@
+build
+composer.lock
+docs
+vendor
+coverage
+
+
+# JetBrain IDEs related
+*.iml
+*.ipr
+*.iws
+.idea
+.idea/
+
+#VSCode
+.vscode/

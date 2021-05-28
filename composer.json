@@ -45,7 +45,8 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "test-f": "vendor/bin/phpunit --filter"
     },
     "config": {
         "sort-packages": true
@@ -53,10 +54,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "ClubKonnectServiceProvider"
+                "HenryEjemuta\\LaravelClubKonnect\\ClubKonnectServiceProvider"
             ],
             "aliases": {
-                "ClubKonnect": "ClubKonnect"
+                "ClubKonnect": "HenryEjemuta\\LaravelClubKonnect\\Facades\\ClubKonnect"
             }
         }
     }

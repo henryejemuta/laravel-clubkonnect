@@ -53,10 +53,10 @@ class ClubKonnect
         $params['UserID'] = $this->config['user_id'];
         $params['APIKey'] = urldecode($this->config['api_key']);
         $response = Http::get("{$this->baseUrl}$endpoint", $params);
-
         $responseObject = json_decode($response->body());
-        if (isset($responseObject->code) && isset($responseObject->message))
-            return new ClubKonnectResponse($responseObject->code, $responseObject->message, isset($responseObject->data) ? $responseObject->data : null);
+
+        if ($response->getStatusCode() == 200)
+            return new ClubKonnectResponse($responseObject);
         return new ClubKonnectResponse();
     }
 

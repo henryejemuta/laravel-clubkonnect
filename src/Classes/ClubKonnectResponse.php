@@ -12,6 +12,7 @@
 namespace HenryEjemuta\LaravelClubKonnect\Classes;
 
 
+use HenryEjemuta\LaravelClubKonnect\Enums\ClubKonnectStatusCodeEnum;
 use HenryEjemuta\LaravelClubKonnect\Exceptions\ClubKonnectErrorException;
 
 class ClubKonnectResponse
@@ -24,9 +25,14 @@ class ClubKonnectResponse
     private $hasError;
 
     /**
-     * @var string
+     * @var int
      */
     private $code;
+
+    /**
+     * @var ClubKonnectStatusCodeEnum
+     */
+    private $clubKonnectStatusCodeEnum;
 
     /**
      * Response Body from
@@ -37,20 +43,25 @@ class ClubKonnectResponse
 
     /**
      * ClubKonnectResponse constructor.
-     * @param string $code
+     * @param int $code
      * @param string $message
      * @param object|array|null $responseBody
      * @throws ClubKonnectErrorException
      */
-    public function __construct(string $code = 'failed', $message = 'Unable to reach ClubKonnect Server', $responseBody = null)
+    public function __construct($responseBody = null)
     {
-        if($message == 'Your account is not activated for API access. Kindly upgrade to a Reseller Account to access our API'){
-            $code = "upgrade";
+        if (isset($responseBody->status)) {
+            $statusCode = ClubKonnectStatusCodeEnum::getByStatus($responseBody->status);
+            $this->code = $statusCode->getCode();
+            $this->message = $statusCode->getRemark();
+        } else {
+            $this->code = 200;
+            $this->message = '';
+            $this->clubKonnectStatusCodeEnum = '';
         }
+
         $this->body = $responseBody;
-        $this->code = strtolower("$code");
-        $this->message = $message;
-        $this->hasError = !in_array($this->code, ["success", "failure"]);
+        $this->hasError = !in_array($this->code, ClubKonnectStatusCodeEnum::$successCodes);
 
         if ($this->hasError) {
             $statusCode = ($this->code == "failed") ? 503 : ($this->code == "upgrade") ? 401 : 422;

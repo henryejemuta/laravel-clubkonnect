@@ -28,6 +28,7 @@ use HenryEjemuta\LaravelClubKonnect\Exceptions\ClubKonnectErrorException;
  */
 class ClubKonnectStatusCodeEnum
 {
+    public static $successCodes = [100, 199, 300, 200, 201];
     private static $statusCodes = [
         '100' => [
             'code' => 100,
@@ -464,7 +465,7 @@ N.B. Transactions are usually placed on hold due to network issues with the prov
                 }
             }
             if (!$found) {
-                throw new ClubKonnectErrorException("Not a valid ClubKonnect Status Code", 999);
+                throw new ClubKonnectErrorException("$status", 999);
             }
         }
         return self::$cache[$status];

@@ -25,14 +25,14 @@ class ClubKonnectResponse
     private $hasError;
 
     /**
+     * @var ClubKonnectErrorException
+     */
+    private $error;
+
+    /**
      * @var int
      */
     private $code;
-
-    /**
-     * @var ClubKonnectStatusCodeEnum
-     */
-    private $clubKonnectStatusCodeEnum;
 
     /**
      * Response Body from
@@ -43,35 +43,33 @@ class ClubKonnectResponse
 
     /**
      * ClubKonnectResponse constructor.
-     * @param int $code
-     * @param string $message
      * @param object|array|null $responseBody
-     * @throws ClubKonnectErrorException
      */
     public function __construct($responseBody = null)
     {
         if (isset($responseBody->status)) {
-            $statusCode = ClubKonnectStatusCodeEnum::getByStatus($responseBody->status);
+            $statusCode = ClubKonnectStatusCodeEnum::getStatusCode($responseBody->status);
             $this->code = $statusCode->getCode();
-            $this->message = $statusCode->getRemark();
+            $remark = ($responseBody->status == $statusCode->getRemark()) ? '' : $statusCode->getRemark();
+            $this->message = $remark . (!empty($remark) ? ', ' : '') . $statusCode->getDescription();
         } else {
             $this->code = 200;
             $this->message = '';
-            $this->clubKonnectStatusCodeEnum = '';
         }
 
         $this->body = $responseBody;
         $this->hasError = !in_array($this->code, ClubKonnectStatusCodeEnum::$successCodes);
 
         if ($this->hasError) {
-            $statusCode = ($this->code == "failed") ? 503 : ($this->code == "upgrade") ? 401 : 422;
-            throw new ClubKonnectErrorException($message, $statusCode);
+            $this->error = new ClubKonnectErrorException($this->message, $this->code);
+        } else {
+            $this->error = null;
         }
 
     }
 
     /**
-     * Determine if this ise a success response object
+     * Determine if this is a success response object
      * @return bool
      */
     public function successful(): bool
@@ -96,6 +94,16 @@ class ClubKonnectResponse
     }
 
     /**
+     * Returns ClubKonnectErrorException with appropriate ClubKonnect status code and Message if this isn't a successful response, otherwise, null is returned
+     * @return ClubKonnectErrorException|null
+     */
+    public function getErrorException()
+    {
+        return $this->error;
+    }
+
+    /**
+     * Return the response body as specified in the ClubKunnect API documentation for the corresponding request. This would be null on fail request
      * @return object|array|null
      */
     public function getBody()

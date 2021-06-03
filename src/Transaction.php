@@ -12,7 +12,6 @@
 namespace HenryEjemuta\LaravelClubKonnect;
 
 use HenryEjemuta\LaravelClubKonnect\Classes\ClubKonnectResponse;
-use HenryEjemuta\LaravelClubKonnect\Exceptions\ClubKonnectErrorException;
 
 abstract class Transaction
 {
@@ -32,7 +31,6 @@ abstract class Transaction
      *
      * @param string $orderID
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function queryByOrderID(string $orderID): ClubKonnectResponse
     {
@@ -45,7 +43,6 @@ abstract class Transaction
      *
      * @param string $requestID
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function queryByRequestID(string $requestID): ClubKonnectResponse
     {
@@ -58,7 +55,6 @@ abstract class Transaction
      *
      * @param string $orderID
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function cancelTransaction(string $orderID): ClubKonnectResponse
     {

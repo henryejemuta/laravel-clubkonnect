@@ -12,8 +12,6 @@
 namespace HenryEjemuta\LaravelClubKonnect\Enums;
 
 
-use HenryEjemuta\LaravelClubKonnect\Exceptions\ClubKonnectErrorException;
-
 /**
  * Process flow for dispute resolution is outlined below
  *
@@ -381,17 +379,17 @@ N.B. Transactions are usually placed on hold due to network issues with the prov
             'remark' => 'Order already completed, cancelled or refunded',
             'description' => 'Transaction was sent and response received from mobile network operator that the transaction was unsuccessful and as such was cancelled by our system'
         ],
-        '522' => [
-            'code' => 522,
+        '599' => [
+            'code' => 599,
             'status' => 'ORDER_CANCELLED',
             'remark' => 'Unspecified Error',
             'description' => 'Transaction was sent and response received from mobile network operator that the transaction was unsuccessful and as such was cancelled by our system'
         ],
-        '521' => [
-            'code' => 521,
-            'status' => 'ORDER_CANCELLED',
-            'remark' => 'Unspecified',
-            'description' => 'Transaction was sent and response received from mobile network operator that the transaction was unsuccessful and as such was cancelled by our system'
+        '999' => [
+            'code' => 999,
+            'status' => 'NAVSC',
+            'remark' => '',
+            'description' => 'Invalide status code, this might be as a result of inablity to communicate with ClubKonnect API Server.'
         ],
     ];
     private static $cache = [];
@@ -436,13 +434,12 @@ N.B. Transactions are usually placed on hold due to network issues with the prov
     /**
      * @param $code
      * @return ClubKonnectStatusCodeEnum|null
-     * @throws ClubKonnectErrorException
      */
     public static function getByCode($code): ?ClubKonnectStatusCodeEnum
     {
         $code = trim($code);
         if (!key_exists($code, self::$statusCodes))
-            throw new ClubKonnectErrorException("Not a valid ClubKonnect Status Code", 999);
+            self::$cache[$code] = new ClubKonnectStatusCodeEnum(self::$statusCodes[999]);
         if (!key_exists($code, self::$cache))
             self::$cache[$code] = new ClubKonnectStatusCodeEnum(self::$statusCodes[$code]);
         return self::$cache[$code];
@@ -451,21 +448,21 @@ N.B. Transactions are usually placed on hold due to network issues with the prov
     /**
      * @param $status
      * @return ClubKonnectStatusCodeEnum|null
-     * @throws ClubKonnectErrorException
      */
-    public static function getByStatus($status): ?ClubKonnectStatusCodeEnum
+    public static function getStatusCode($status): ?ClubKonnectStatusCodeEnum
     {
         $status = trim($status);
         if (!key_exists($status, self::$cache)) {
             $found = false;
             foreach (self::$statusCodes as $code => $statusCode) {
-                if ($statusCode['status'] == $status) {
+                if (($statusCode['status'] == $status) || ($statusCode['remark'] == $status)) {
                     self::$cache[$status] = new ClubKonnectStatusCodeEnum($statusCode);
                     $found = true;
+                    break;
                 }
             }
             if (!$found) {
-                throw new ClubKonnectErrorException("$status", 999);
+                self::$cache[$status] = new ClubKonnectStatusCodeEnum(self::$statusCodes[999]);
             }
         }
         return self::$cache[$status];
@@ -474,7 +471,6 @@ N.B. Transactions are usually placed on hold due to network issues with the prov
     /**
      * @param $remark
      * @return ClubKonnectStatusCodeEnum|null
-     * @throws ClubKonnectErrorException
      */
     public static function getByRemark($remark): ?ClubKonnectStatusCodeEnum
     {
@@ -488,7 +484,7 @@ N.B. Transactions are usually placed on hold due to network issues with the prov
                 }
             }
             if (!$found) {
-                throw new ClubKonnectErrorException("Not a valid ClubKonnect Status Code", 999);
+                self::$cache[$remark] = new ClubKonnectStatusCodeEnum(self::$statusCodes[999]);
             }
         }
         return self::$cache[$remark];

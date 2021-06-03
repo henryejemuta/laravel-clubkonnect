@@ -28,7 +28,6 @@ abstract class CableTv
 
     /**
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function getTvPackages(): ClubKonnectResponse
     {
@@ -39,7 +38,6 @@ abstract class CableTv
      * @param CableTvEnum $cableTv
      * @param $smartCardNo
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function verifyCustomerID(CableTvEnum $cableTv, $smartCardNo): ClubKonnectResponse
     {
@@ -56,7 +54,6 @@ abstract class CableTv
      * @param $requestID
      * @param $callbackUrl
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function purchasePackage(CableTvEnum $cableTv, string $package, $smartCardNo, $requestID, $callbackUrl = null): ClubKonnectResponse
     {

@@ -4,7 +4,6 @@ namespace HenryEjemuta\LaravelClubKonnect;
 
 use HenryEjemuta\LaravelClubKonnect\Classes\ClubKonnectResponse;
 use HenryEjemuta\LaravelClubKonnect\Enums\NetworkEnum;
-use HenryEjemuta\LaravelClubKonnect\Exceptions\ClubKonnectErrorException;
 use Illuminate\Support\Facades\Http;
 
 class ClubKonnect
@@ -46,7 +45,6 @@ class ClubKonnect
      * @param string $endpoint
      * @param array $params
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function withAuth(string $endpoint, array $params = []): ClubKonnectResponse
     {
@@ -63,7 +61,6 @@ class ClubKonnect
     /**
      * Check your Server IP
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function checkYourServerIP(): ClubKonnectResponse
     {
@@ -73,7 +70,6 @@ class ClubKonnect
     /**
      * Get Your wallet available balance, Wallet is identified by username set in clubkonnect config or environmental variable
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function getWalletBalance(): ClubKonnectResponse
     {
@@ -87,7 +83,6 @@ class ClubKonnect
      * @param $requestID
      * @param $callbackUrl
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function purchaseAirtime(NetworkEnum $mobileNetwork, int $amount, $phoneNumber, $requestID, $callbackUrl): ClubKonnectResponse
     {
@@ -103,6 +98,11 @@ class ClubKonnect
     private $transaction;
 
     /**
+     * ClubKonnect API Transaction handler to access:
+     * CableTv()->queryByOrderID(string $orderID);
+     * CableTv()->queryByRequestID(string $requestID);
+     * CableTv()->cancelTransaction(string $orderID);
+     *
      * @return Transaction
      */
     public function Transaction(): Transaction
@@ -116,6 +116,11 @@ class ClubKonnect
     private $smile;
 
     /**
+     * Smile Bill handler to access:
+     * CableTv()->getDataBundles();
+     * CableTv()->verifySmileAccountID($phoneNumber);
+     * CableTv()->purchaseBundle(string $plan, string $phoneNumber, $requestID, $callbackUrl = null);
+     *
      * @return Smile
      */
     public function Smile(): Smile
@@ -129,6 +134,11 @@ class ClubKonnect
     private $cableTv;
 
     /**
+     * Cable TV Bill handler to access:
+     * CableTv()->getTvPackages();
+     * CableTv()->verifyCustomerID(CableTvEnum $cableTv, $smartCardNo);
+     * CableTv()->purchasePackage(CableTvEnum $cableTv, string $package, $smartCardNo, $requestID, $callbackUrl = null);
+     *
      * @return CableTv
      */
     public function CableTv(): CableTv
@@ -142,6 +152,10 @@ class ClubKonnect
     private $rechargeCardPrinting;
 
     /**
+     * Recharge Card Printing handler to access:
+     * RechargeCardPrinting()->getEPinNetworks();
+     * RechargeCardPrinting()->buyEPins(NetworkEnum $network, $amount, int $quantity, $requestID, $callbackUrl = null);
+     *
      * @return RechargeCardPrinting
      */
     public function RechargeCardPrinting(): RechargeCardPrinting
@@ -154,9 +168,8 @@ class ClubKonnect
 
 
     /**
-     * Get DataBundles
+     * Get all Data Bundles
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function getDataBundles(): ClubKonnectResponse
     {
@@ -171,7 +184,6 @@ class ClubKonnect
      * @param $requestID
      * @param $callbackUrl
      * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
      */
     public function purchaseDataBundle(NetworkEnum $network, string $plan, string $phoneNumber, $requestID, $callbackUrl): ClubKonnectResponse
     {

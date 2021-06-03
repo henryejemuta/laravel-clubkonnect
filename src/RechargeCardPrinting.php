@@ -27,7 +27,6 @@ abstract class RechargeCardPrinting
 
     /**
      * @return ClubKonnectResponse
-     * @throws Exceptions\ClubKonnectErrorException
      */
     public function getEPinNetworks(): ClubKonnectResponse
     {
@@ -41,7 +40,6 @@ abstract class RechargeCardPrinting
      * @param $requestID
      * @param $callbackUrl
      * @return ClubKonnectResponse
-     * @throws Exceptions\ClubKonnectErrorException
      */
     public function buyEPins(NetworkEnum $network, $amount, int $quantity, $requestID, $callbackUrl = null): ClubKonnectResponse
     {

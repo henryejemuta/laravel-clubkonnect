@@ -33,145 +33,119 @@ php artisan clubkonnect:init
 
 ## Usage
 
-The Laravel ClubKonnect Package is quite easy to use via the VtuDontNG facade
+**Important: Kindly use the ``$response->successful()`` to check the response state before proceeding with working with the response and gracefully throw and handle the ClubKonnectErrorException on failed request**
+
+Before initiating any transaction kindly check your balance to confirm you have enough ClubKonnect balance to handle the transaction
+
+The Laravel ClubKonnect Package is quite easy to use via the ClubKonnect facade
 ``` php
 use HenryEjemuta\LaravelClubKonnect\Facades\ClubKonnect;
 use HenryEjemuta\LaravelClubKonnect\Classes\ClubKonnectResponse;
 
 ...
+//Check ClubKonnect Balance
+    $response = ClubKonnect::getWalletBalance();
+    if ($response->successful()) {
+        $body = $response->getBody();
+        echo "Your {$body->phoneno} ClubKonnect Balance is {$body->balance}";
+    } else {
+        $exception = $response->getErrorException();
+        Log::error("Error while checking balance\n\r" . $exception->getCode() . ": " . $exception->getMessage());
+    }
+
 //To buy Airtime
-try{
-    $response = ClubKonnect::purchaseAirtime(NetworkEnum::getNetwork('mtn'), '1500', '08134567890');
-}catch(ClubKonnectErrorException $ex){
-    Log::error("Error while purchasing airtime\n\r" . $exception->getCode() . ": " . $exception->getMessage());
-}
+    $response = ClubKonnect::purchaseAirtime(NetworkEnum::getNetwork('mtn'), '1500', '08134567890', 'MY_UNIQUE_TXN_ID', 'https://example.com/afterorderurl');
+    if (!$response->successful()) {
+            $exception = $response->getErrorException();
+        Log::error("Error while purchasing airtime\n\r" . $exception->getCode() . ": " . $exception->getMessage());
+    }
+
 ...
 
 ```
-**Note: To handle upgrade warning differently it is thrown as exception with the message from ClubKonnect and an error code of 401**
 
 
 Find an overview of all method with comment on what they do and expected arguments
 ``` php
 
-
-    /**
-     * Get Your wallet available balance, Wallet is identified by username set in clubkonnect config or environmental variable
-     * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
-     */
-    public function getWalletBalance(): ClubKonnectResponse
-
-    /**
-     * Purchase Airtime with py specifying the network (i.e. mtn, glo, airtel, or 9mobile to buy airtime corresponding the provided telco service code)
-     * @param string $network The network_id is used to make each network unique. They include mtn, glo, airtel and etisalat. Notice that they are all in small letters.
-     * @param int $amount The amount you wish to topup
-     * @param string $phoneNumber The phone number that will receive the airtime
-     * @return ClubKonnectResponse
-     *
-     * @throws ClubKonnectErrorException
-     */
-    public function purchaseAirtime(string $network, int $amount, $phoneNumber): ClubKonnectResponse
-
-
-    /**
-     * Purchase Data Bundle
-     * @param string $network The network_id is used to make each network unique. They include mtn, glo, airtel and etisalat. Notice that they are all in small letters.
-     * @param string $plan The variation ID of the data plan you want to purchase.
-     * @param string $phone The phone number that will receive the data
-     * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
-     */
-    public function purchaseDataBundle(string $network, string $plan, string $phone): ClubKonnectResponse
-
-    /**
-     * Verify Customer Smart Card Number/IUC/Decoder Number verification
-     * You need to verify your customer unique number before purchasing.
-     *
-     * @param string $cableTvType The $cableTvType is used to make each cable TV unique. They include dstv, gotv, and startimes. Notice that they are all in small letters.
-     * @param string $smartCardNumber The smartcard/IUC number of the decoder that should be subscribed
-     * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
-     */
-    public function verifyCableSmartCardNumber(string $cableTvType, string $smartCardNumber): ClubKonnectResponse
-
-    /**
-     * Purchase DSTV or GoTv Cable Tv Plan
-     *
-     *
-     * @param string $cableTvType The $cableTvType is used to make each cable TV unique. They include dstv, gotv, and startimes. Notice that they are all in small letters.
-     * @param string $smartCardNumber The smartcard/IUC number of the decoder that should be subscribed
-     * @param string $plan The $plan ID of the cable TV package/bouquet you want to purchase. They are as follows:
-     *
-     *    dstv-padi = DStv Padi
-     *    dstv-yanga = DStv Yanga
-     *    dstv-confam = DStv Confam
-     *    dstv6 = DStv Asian
-     *    dstv79 = DStv Compact
-     *    dstv7 = DStv Compact Plus
-     *    dstv3 = DStv Premium
-     *    dstv10 = DStv Premium Asia
-     *    gotv-smallie = GOtv Smallie
-     *    gotv-jinja = GOtv Jinja
-     *    gotv-jolli = GOtv Jolli
-     *    gotv-max = GOtv Max
-     *    nova = Startimes Nova
-     *    basic = Startimes Basic
-     *    smart = Startimes Smart
-     *    classic = Startimes Classic
-     *    super = Startimes Super
-     *
-     * @param string $customerPhoneNumber The phone number that will be stored for reference
-     * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
-     */
-    public function purchaseCableTvPlan(string $cableTvType, string $smartCardNumber, string $plan, string $customerPhoneNumber): ClubKonnectResponse
-
-    /**
-     * We advise that you always verify the customer’s details before submitting requests to purchase the service (cable TV or electricity). The ClubKonnect customer verification endpoint allows you to get the customer’s full name.
-     *
-     * Please note the service_id below:
-     * Ikaja Electricity = <strong>ikeja-electric</strong>
-     * Eko Electricity = <strong>eko-electric</strong>
-     * Kano Electricity = <strong>kano-electric</strong>
-     * Kaduna Electricity = <strong>Kaduna-electric</strong>
-     * Port Harcourt Electricity = <strong>phed</strong>
-     * Jos Electricity = <strong>jos-electric</strong>
-     * Abuja Electricity = <strong>abuja-electric</strong>
-     * Ibadan Electricity = <strong>ibadan-electric</strong>
-     *
-     *
-     * @param string $disco The service_id is unique for all cable TV and electricity services.
-     * @param string $meterNumber Meter Number to verify
-     * @param string $meterType Meter type i.e. <strong>prepaid</strong> or <strong>postpaid</strong>
-     * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
-     */
-    public function verifyMeterNumber(string $disco, string $meterNumber, string $meterType): ClubKonnectResponse
-
-    /**
-     * Purchase Electricity
-     * You can purchase electricity through our API and get instant token for prepaid meters.
-     *
-     * @param string $disco Unique code of the Electricity distribution company the meter number is for
-     * The discos unique service_id is used to make each electricity company unique. They are as follows:
-     * Ikaja Electricity = <strong>ikeja-electric</strong>
-     * Eko Electricity = <strong>eko-electric</strong>
-     * Kano Electricity = <strong>kano-electric</strong>
-     * Kaduna Electricity = <strong>Kaduna-electric</strong>
-     * Port Harcourt Electricity = <strong>phed</strong>
-     * Jos Electricity = <strong>jos-electric</strong>
-     * Abuja Electricity = <strong>abuja-electric</strong>
-     * Ibadan Electricity = <strong>ibadan-electric</strong>
-     *
-     * @param string $meterNumber The meter number you want to purchase electricity for
-     * @param string $meterType The meter type of electricity company you want to purchase. It is either prepaid or postpaid
-     * @param int $amount The meter type of electricity company you want to purchase. It is either prepaid or postpaid
-     * @param string $customerPhoneNumber The phone number that will be stored for reference
-     * @return ClubKonnectResponse
-     * @throws ClubKonnectErrorException
-     */
-    public function purchaseElectricity(string $disco, string $meterNumber, string $meterType, $amount, string $customerPhoneNumber): ClubKonnectResponse
+        /**
+         * Check your Server IP
+         * @return ClubKonnectResponse
+         */
+        public function checkYourServerIP(): ClubKonnectResponse
+    
+        /**
+         * Get Your wallet available balance, Wallet is identified by username set in clubkonnect config or environmental variable
+         * @return ClubKonnectResponse
+         */
+        public function getWalletBalance(): ClubKonnectResponse
+    
+        /**
+         * @param NetworkEnum $mobileNetwork
+         * @param int $amount
+         * @param $phoneNumber
+         * @param $requestID
+         * @param $callbackUrl
+         * @return ClubKonnectResponse
+         */
+        public function purchaseAirtime(NetworkEnum $mobileNetwork, int $amount, $phoneNumber, $requestID, $callbackUrl): ClubKonnectResponse
+    
+        /**
+         * ClubKonnect API Transaction handler to access:
+         * CableTv()->queryByOrderID(string $orderID);
+         * CableTv()->queryByRequestID(string $requestID);
+         * CableTv()->cancelTransaction(string $orderID);
+         *
+         * @return Transaction
+         */
+        public function Transaction(): Transaction
+    
+        /**
+         * Smile Bill handler to access:
+         * CableTv()->getDataBundles();
+         * CableTv()->verifySmileAccountID($phoneNumber);
+         * CableTv()->purchaseBundle(string $plan, string $phoneNumber, $requestID, $callbackUrl = null);
+         *
+         * @return Smile
+         */
+        public function Smile(): Smile
+    
+        /**
+         * Cable TV Bill handler to access:
+         * CableTv()->getTvPackages();
+         * CableTv()->verifyCustomerID(CableTvEnum $cableTv, $smartCardNo);
+         * CableTv()->purchasePackage(CableTvEnum $cableTv, string $package, $smartCardNo, $requestID, $callbackUrl = null);
+         *
+         * @return CableTv
+         */
+        public function CableTv(): CableTv
+    
+        /**
+         * Recharge Card Printing handler to access:
+         * RechargeCardPrinting()->getEPinNetworks();
+         * RechargeCardPrinting()->buyEPins(NetworkEnum $network, $amount, int $quantity, $requestID, $callbackUrl = null);
+         *
+         * @return RechargeCardPrinting
+         */
+        public function RechargeCardPrinting(): RechargeCardPrinting
+    
+    
+        /**
+         * Get all Data Bundles
+         * @return ClubKonnectResponse
+         */
+        public function getDataBundles(): ClubKonnectResponse
+    
+    
+        /**
+         * @param NetworkEnum $network
+         * @param string $plan
+         * @param string $phoneNumber
+         * @param $requestID
+         * @param $callbackUrl
+         * @return ClubKonnectResponse
+         */
+        public function purchaseDataBundle(NetworkEnum $network, string $plan, string $phoneNumber, $requestID, $callbackUrl): ClubKonnectResponse
 
 ```
 

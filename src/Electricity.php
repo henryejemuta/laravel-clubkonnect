@@ -28,7 +28,6 @@ abstract class Electricity
 
     /**
      * @return ClubKonnectResponse
-     * @throws Exceptions\ClubKonnectErrorException
      */
     public function getDiscosAndMinMax(): ClubKonnectResponse
     {
@@ -39,7 +38,6 @@ abstract class Electricity
      * @param DiscoEnum $disco
      * @param $meterNumber
      * @return ClubKonnectResponse
-     * @throws Exceptions\ClubKonnectErrorException
      */
     public function verifyMeterNumber(DiscoEnum $disco, $meterNumber): ClubKonnectResponse
     {
@@ -57,9 +55,8 @@ abstract class Electricity
      * @param $requestID
      * @param $callbackUrl
      * @return ClubKonnectResponse
-     * @throws Exceptions\ClubKonnectErrorException
      */
-    public function buyElectricity(DiscoEnum $disco, $meterNumber, $amount, MeterTypeEnum $meterType, $requestID, $callbackUrl  = null): ClubKonnectResponse
+    public function buyElectricity(DiscoEnum $disco, $meterNumber, $amount, MeterTypeEnum $meterType, $requestID, $callbackUrl = null): ClubKonnectResponse
     {
         $callbackUrl = is_null($callbackUrl) ? $this->config['default_redirect_url'] : $callbackUrl;
         return $this->clubKonnect->withAuth('APIElectricityV1.asp', [

@@ -67,7 +67,7 @@ class DiscoEnum
      * @return DiscoEnum|null
      * @throws ClubKonnectErrorException
      */
-    public static function getByCode($uid): ?DiscoEnum
+    public static function getByUID($uid): ?DiscoEnum
     {
         $uid = trim("$uid");
         if (!key_exists($uid, self::$discos))
@@ -82,13 +82,13 @@ class DiscoEnum
      * @return DiscoEnum|null
      * @throws ClubKonnectErrorException
      */
-    public static function getByStatus($code): ?DiscoEnum
+    public static function getByCode($code): ?DiscoEnum
     {
         $code = trim($code);
         if (!key_exists($code, self::$cache)) {
             $found = false;
             foreach (self::$discos as $idx => $disco) {
-                if ($disco->getCode() == $code) {
+                if ($disco['code'] == $code) {
                     self::$cache[$code] = new DiscoEnum($idx, $disco);
                     $found = true;
                 }

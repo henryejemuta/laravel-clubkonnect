@@ -147,6 +147,17 @@ Find an overview of all method with comment on what they do and expected argumen
          */
         public function purchaseDataBundle(NetworkEnum $network, string $plan, string $phoneNumber, $requestID, $callbackUrl): ClubKonnectResponse
 
+        
+    /**
+     * Electricity Bills payment handler to access:
+     * Electricity()->getDiscosAndMinMax();
+     * Electricity()->verifyMeterNumber(DiscoEnum $disco, $meterNumber): ClubKonnectResponse
+     * Electricity()->buyElectricity(DiscoEnum $disco, $meterNumber, $amount, MeterTypeEnum $meterType, $requestID, $callbackUrl = null): ClubKonnectResponse
+     *
+     * @return Electricity
+     */
+    public function Electricity(): Electricity
+
 ```
 
 ### Testing
@@ -170,7 +181,7 @@ If you discover any security related issues, please email henry.ejemuta@gmail.co
 ## Credits
 
 - [Henry Ejemuta](https://github.com/henryejemuta)
-- [All Contributors](../../contributors)
+- [All Contributors](https://github.com/henryejemuta/graphs/contributors)
 
 ## License
 

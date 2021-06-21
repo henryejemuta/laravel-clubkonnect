@@ -195,4 +195,23 @@ class ClubKonnect
             'CallBackURL' => $callbackUrl
         ]);
     }
+
+
+    private $electricity;
+
+    /**
+     * Electricity Bills payment handler to access:
+     * Electricity()->getDiscosAndMinMax();
+     * Electricity()->verifyMeterNumber(DiscoEnum $disco, $meterNumber): ClubKonnectResponse
+     * Electricity()->buyElectricity(DiscoEnum $disco, $meterNumber, $amount, MeterTypeEnum $meterType, $requestID, $callbackUrl = null): ClubKonnectResponse
+     *
+     * @return Electricity
+     */
+    public function Electricity(): Electricity
+    {
+        if (is_null($this->electricity))
+            $this->electricity = new class($this, $this->config) extends Electricity {
+            };
+        return $this->electricity;
+    }
 }

@@ -4,6 +4,7 @@ namespace HenryEjemuta\LaravelClubKonnect\Facades;
 
 use HenryEjemuta\LaravelClubKonnect\CableTv;
 use HenryEjemuta\LaravelClubKonnect\Classes\ClubKonnectResponse;
+use HenryEjemuta\LaravelClubKonnect\Electricity;
 use HenryEjemuta\LaravelClubKonnect\Enums\NetworkEnum;
 use HenryEjemuta\LaravelClubKonnect\RechargeCardPrinting;
 use HenryEjemuta\LaravelClubKonnect\Smile;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Transaction Transaction()
  * @method static Smile Smile()
  * @method static CableTv CableTv()
+ * @method static Electricity Electricity()
  * @method static RechargeCardPrinting RechargeCardPrinting()
  * @method static ClubKonnectResponse getDataBundles()
  * @method static ClubKonnectResponse purchaseDataBundle(NetworkEnum $network, string $plan, string $phoneNumber, $requestID, $callbackUrl)

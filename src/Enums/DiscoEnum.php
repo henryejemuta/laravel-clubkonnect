@@ -21,11 +21,11 @@ class DiscoEnum
         'ekedc' => ['code' => '01', 'name' => 'Eko Electric - EKEDC'],
         'ikedc' => ['code' => '02', 'name' => 'Ikeja Electric - IKEDC'],
         'aedc' => ['code' => '03', 'name' => 'Abuja Electric - AEDC'],
-        'kedc' => ['code' => '04', 'name' => 'Kano Electric - KEDC'],
-        'phedc' => ['code' => '05', 'name' => 'Porthacourt Electric - PHEDC'],
-        'jedc' => ['code' => '06', 'name' => 'Jos Electric - JEDC'],
+        'kedco' => ['code' => '04', 'name' => 'Kano Electric - KEDCO'],
+        'phed' => ['code' => '05', 'name' => 'Porthacourt Electric - PHED'],
+        'jed' => ['code' => '06', 'name' => 'Jos Electric - JED'],
         'ibedc' => ['code' => '07', 'name' => 'Ibadan Electric - IBEDC'],
-        'kaedc' => ['code' => '08', 'name' => 'Kaduna Elecdtric - KAEDC'],
+        'kaedco' => ['code' => '08', 'name' => 'Kaduna Elecdtric - KAEDCO'],
         'eedc' => ['code' => '09', 'name' => 'Enugu Electric - EEDC'],
     ];
 

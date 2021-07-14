@@ -1,6 +1,5 @@
 # Laravel ClubKonnect
 
-[![Build Status](https://travis-ci.org/henryejemuta/laravel-clubkonnect.svg?branch=master)](https://travis-ci.org/henryejemuta/laravel-clubkonnect)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/henryejemuta/laravel-clubkonnect.svg?style=flat-square)](https://packagist.org/packages/henryejemuta/laravel-clubkonnect)
 [![Latest Stable Version](https://poser.pugx.org/henryejemuta/laravel-clubkonnect/v/stable)](https://packagist.org/packages/henryejemuta/laravel-clubkonnect)
 [![Total Downloads](https://poser.pugx.org/henryejemuta/laravel-clubkonnect/downloads)](https://packagist.org/packages/henryejemuta/laravel-clubkonnect)
